@@ -26,7 +26,7 @@ function App() {
   const resetChoices = () => {
     setFirstChoice(null);
     setSecondChoice(null);
-    setMatchedCards([]);
+    //setMatchedCards([]);
   };
 
   const traitementCards = (cards) => {
@@ -49,10 +49,18 @@ function App() {
       firstChoice &&
       secondChoice &&
       firstChoice === secondChoice &&
-      firstChoice != null
+      firstChoice != null &&
+      secondChoice != null
     ) {
       console.log("ça match !");
       resetChoices();
+    } else if (
+      firstChoice != secondChoice &&
+      firstChoice != null &&
+      secondChoice != null
+    ) {
+      console.log('ça match pooo :(')
+      resetChoices()
     }
   }, [secondChoice]);
 
