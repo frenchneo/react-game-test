@@ -68,7 +68,11 @@ function App() {
   return (
     <>
       <p>Lorem ipsum</p>
-      <Cards cards={opCards} onCardClick={handleClick} />
+      <Cards
+        cards={opCards}
+        onCardClick={handleClick}
+        flippedCards={matchedCards.map((card) => card.uniqueId)}
+      />
       <button
         onClick={() => {
           console.log("op", opCards);

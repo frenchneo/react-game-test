@@ -1,8 +1,10 @@
-const Card = ({ img, onClick }) => {
+import ReverseCard from "../../assets/img/reverse_card.png"
+
+const Card = ({ img, onClick, flipped }) => {
   return (
     <img
       className={`card ${img}`}
-      src={img}
+      src={flipped ? ReverseCard : img}
       alt={`card ${img}`}
       onClick={onClick}
     />
