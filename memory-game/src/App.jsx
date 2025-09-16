@@ -5,16 +5,14 @@ import Card3 from "./assets/img/card_3.png";
 import Card4 from "./assets/img/card_4.png";
 import Card5 from "./assets/img/card_5.png";
 import Cards from "./components/cards";
-import { useEffect } from "react";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 
 function App() {
   const handleClick = (img) => {
     console.log("ça clique");
   };
   const cards = [Card1, Card2, Card3, Card4, Card5];
-  
+  const [opCards, setOpCards] = useState([]);
 
   const traitementCards = (cards) => {
     const doubled = [...cards, ...cards];
@@ -28,13 +26,13 @@ function App() {
   };
 
   useEffect(() => {
-    traitementCards(cards);
+    setOpCards(traitementCards(cards));
   }, []);
 
   return (
     <>
       <p>Lorem ipsum</p>
-      <Cards cards={cards} onCardClick={handleClick} />
+      <Cards cards={opCards} onCardClick={handleClick} />
     </>
   );
 }
