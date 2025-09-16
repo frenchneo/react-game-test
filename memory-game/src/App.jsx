@@ -10,9 +10,24 @@ import { useEffect, useState } from "react";
 function App() {
   const handleClick = (img) => {
     console.log("ça clique", img);
+    if (firstChoice === null) {
+      setFirstChoice(img);
+    } else {
+      setSecondChoice(img);
+    }
   };
   const cards = [Card1, Card2, Card3, Card4, Card5];
   const [opCards, setOpCards] = useState([]);
+
+  const [firstChoice, setFirstChoice] = useState(null);
+  const [secondChoice, setSecondChoice] = useState(null);
+  const [matchedCards, setMatchedCards] = useState([]);
+
+  const resetChoices = () => {
+    setFirstChoice(null);
+    setSecondChoice(null);
+    setMatchedCards([]);
+  };
 
   const traitementCards = (cards) => {
     const doubled = [...cards, ...cards];
@@ -28,6 +43,18 @@ function App() {
   useEffect(() => {
     setOpCards(traitementCards(cards));
   }, []);
+
+  useEffect(() => {
+    if (
+      firstChoice &&
+      secondChoice &&
+      firstChoice === secondChoice &&
+      firstChoice != null
+    ) {
+      console.log("ça match !");
+      resetChoices();
+    }
+  }, [secondChoice]);
 
   return (
     <>
