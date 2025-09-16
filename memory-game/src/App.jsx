@@ -8,12 +8,12 @@ import Cards from "./components/cards/cards";
 import { useEffect, useState } from "react";
 
 function App() {
-  const handleClick = (img) => {
-    console.log("ça clique", img);
+  const handleClick = (card) => {
+    console.log("ça clique", card);
     if (firstChoice === null) {
-      setFirstChoice(img);
+      setFirstChoice(card);
     } else {
-      setSecondChoice(img);
+      setSecondChoice(card);
     }
   };
   const cards = [Card1, Card2, Card3, Card4, Card5];
@@ -26,17 +26,17 @@ function App() {
   const resetChoices = () => {
     setFirstChoice(null);
     setSecondChoice(null);
-    //setMatchedCards([]);
   };
 
   const traitementCards = (cards) => {
-    const doubled = [...cards, ...cards];
-
+    const doubled = [...cards, ...cards].map((card) => ({
+      img: card,
+      uniqueId: crypto.randomUUID(),
+    }));
     for (let i = doubled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [doubled[i], doubled[j]] = [doubled[j], doubled[i]];
     }
-
     return doubled;
   };
 
@@ -48,19 +48,20 @@ function App() {
     if (
       firstChoice &&
       secondChoice &&
-      firstChoice === secondChoice &&
+      firstChoice.img === secondChoice.img &&
       firstChoice != null &&
       secondChoice != null
     ) {
       console.log("ça match !");
+      setMatchedCards((prev) => [...prev, firstChoice, secondChoice]);
       resetChoices();
     } else if (
-      firstChoice != secondChoice &&
+      firstChoice?.img != secondChoice?.img &&
       firstChoice != null &&
       secondChoice != null
     ) {
-      console.log('ça match pooo :(')
-      resetChoices()
+      console.log("ça match pooo :(");
+      resetChoices();
     }
   }, [secondChoice]);
 
@@ -68,6 +69,20 @@ function App() {
     <>
       <p>Lorem ipsum</p>
       <Cards cards={opCards} onCardClick={handleClick} />
+      <button
+        onClick={() => {
+          console.log("op", opCards);
+        }}
+      >
+        print op
+      </button>
+      <button
+        onClick={() => {
+          console.log("matched", matchedCards);
+        }}
+      >
+        print matched
+      </button>
     </>
   );
 }
