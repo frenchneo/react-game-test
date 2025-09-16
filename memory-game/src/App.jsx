@@ -8,6 +8,7 @@ import Cards from "./components/cards/cards";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { errorAlert, succesAlert } from "./helpers/notification";
+import Modal from "react-modal";
 
 function App() {
   const [opCards, setOpCards] = useState([]);
@@ -44,8 +45,17 @@ function App() {
     setFirstChoice(null);
     setSecondChoice(null);
     setMatchedCards([]);
-    setOpCards(traitementCards(cards)); // remélange les cartes
+    setOpCards(traitementCards(cards));
+    closeModal()
   };
+
+  const [modalIsOpen, setIsOpen] = useState(false);
+  function openModal() {
+    setIsOpen(true);
+  }
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   const traitementCards = (cards) => {
     const doubled = [...cards, ...cards].map((card) => ({
@@ -90,8 +100,7 @@ function App() {
   useEffect(() => {
     if (matchedCards.length === opCards.length && opCards.length > 0) {
       setTimeout(() => {
-        succesAlert("Bravo, tu as gagné !");
-        resetGame();
+        openModal();
       }, 500);
     }
   }, [matchedCards, opCards]);
@@ -99,6 +108,13 @@ function App() {
   return (
     <>
       <p>Lorem ipsum</p>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Example Modal"
+      >
+        <button onClick={() => resetGame()}>Rejouer</button>
+      </Modal>
       <Cards
         cards={opCards}
         onCardClick={handleClick}
