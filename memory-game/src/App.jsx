@@ -4,12 +4,12 @@ import Card2 from "./assets/img/card_2.png";
 import Card3 from "./assets/img/card_3.png";
 import Card4 from "./assets/img/card_4.png";
 import Card5 from "./assets/img/card_5.png";
-import Cards from "./components/cards";
+import Cards from "./components/cards/cards";
 import { useEffect, useState } from "react";
 
 function App() {
   const handleClick = (img) => {
-    console.log("ça clique");
+    console.log("ça clique", img);
   };
   const cards = [Card1, Card2, Card3, Card4, Card5];
   const [opCards, setOpCards] = useState([]);
