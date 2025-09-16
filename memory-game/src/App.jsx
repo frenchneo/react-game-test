@@ -6,19 +6,23 @@ import Card4 from "./assets/img/card_4.png";
 import Card5 from "./assets/img/card_5.png";
 import Cards from "./components/cards/cards";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import { errorAlert, succesAlert } from "./helpers/notification";
 
 function App() {
   const [opCards, setOpCards] = useState([]);
   const [firstChoice, setFirstChoice] = useState(null);
   const [secondChoice, setSecondChoice] = useState(null);
   const [matchedCards, setMatchedCards] = useState([]);
-  const [flippedCards, _] = useState([]);
+  const [flippedCards, setFlippedCards] = useState([]);
   const handleClick = (card) => {
     if (
       flippedCards.includes(card.uniqueId) ||
       matchedCards.find((c) => c.uniqueId === card.uniqueId)
     )
       return;
+
+    setFlippedCards((prev) => [...prev, card.uniqueId]);
 
     console.log("ça clique", card);
 
@@ -62,6 +66,7 @@ function App() {
   useEffect(() => {
     if (firstChoice && secondChoice && firstChoice.img === secondChoice.img) {
       console.log("ça match !");
+      succesAlert("Bon choix !");
       setMatchedCards((prev) => [...prev, firstChoice, secondChoice]);
       resetChoices();
     } else if (
@@ -70,14 +75,22 @@ function App() {
       firstChoice.img !== secondChoice.img
     ) {
       console.log("pas match");
-      resetChoices();
+      errorAlert("Mauvais choix !");
+      setTimeout(() => {
+        setFlippedCards((prev) =>
+          prev.filter(
+            (id) => id !== firstChoice.uniqueId && id !== secondChoice.uniqueId
+          )
+        );
+        resetChoices();
+      }, 1000);
     }
   }, [secondChoice]);
 
   useEffect(() => {
     if (matchedCards.length === opCards.length && opCards.length > 0) {
       setTimeout(() => {
-        alert("Bravo !");
+        succesAlert("Bravo, tu as gagné !");
         resetGame();
       }, 500);
     }
@@ -89,12 +102,17 @@ function App() {
       <Cards
         cards={opCards}
         onCardClick={handleClick}
-        flippedCards={matchedCards.map((card) => card.uniqueId)}
+        flippedCards={[
+          ...matchedCards.map((card) => card.uniqueId),
+          ...flippedCards,
+        ]}
       />
+
       <button onClick={() => console.log("op", opCards)}>print op</button>
       <button onClick={() => console.log("matched", matchedCards)}>
         print matched
       </button>
+      <ToastContainer />
     </>
   );
 }
