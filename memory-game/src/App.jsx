@@ -6,7 +6,7 @@ import Card4 from "./assets/img/card_4.png";
 import Card5 from "./assets/img/card_5.png";
 import Cards from "./components/cards/cards";
 import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { errorAlert, succesAlert } from "./helpers/notification";
 import Modal from "react-modal";
 
@@ -16,13 +16,15 @@ function App() {
   const [secondChoice, setSecondChoice] = useState(null);
   const [matchedCards, setMatchedCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
+  const [isDisabled, setIsDisabled] = useState(false);
+
   const handleClick = (card) => {
     if (
+      isDisabled ||
       flippedCards.includes(card.uniqueId) ||
       matchedCards.find((c) => c.uniqueId === card.uniqueId)
     )
       return;
-
     setFlippedCards((prev) => [...prev, card.uniqueId]);
 
     console.log("ça clique", card);
@@ -46,7 +48,7 @@ function App() {
     setSecondChoice(null);
     setMatchedCards([]);
     setOpCards(traitementCards(cards));
-    closeModal()
+    closeModal();
   };
 
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -86,6 +88,7 @@ function App() {
     ) {
       console.log("pas match");
       errorAlert("Mauvais choix !");
+      setIsDisabled(true);
       setTimeout(() => {
         setFlippedCards((prev) =>
           prev.filter(
@@ -93,6 +96,7 @@ function App() {
           )
         );
         resetChoices();
+        setIsDisabled(false);
       }, 1000);
     }
   }, [secondChoice]);
