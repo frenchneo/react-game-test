@@ -8,24 +8,39 @@ import Cards from "./components/cards/cards";
 import { useEffect, useState } from "react";
 
 function App() {
+  const [opCards, setOpCards] = useState([]);
+  const [firstChoice, setFirstChoice] = useState(null);
+  const [secondChoice, setSecondChoice] = useState(null);
+  const [matchedCards, setMatchedCards] = useState([]);
+  const [flippedCards, _] = useState([]);
   const handleClick = (card) => {
+    if (
+      flippedCards.includes(card.uniqueId) ||
+      matchedCards.find((c) => c.uniqueId === card.uniqueId)
+    )
+      return;
+
     console.log("ça clique", card);
+
     if (firstChoice === null) {
       setFirstChoice(card);
     } else {
       setSecondChoice(card);
     }
   };
-  const cards = [Card1, Card2, Card3, Card4, Card5];
-  const [opCards, setOpCards] = useState([]);
 
-  const [firstChoice, setFirstChoice] = useState(null);
-  const [secondChoice, setSecondChoice] = useState(null);
-  const [matchedCards, setMatchedCards] = useState([]);
+  const cards = [Card1, Card2, Card3, Card4, Card5];
 
   const resetChoices = () => {
     setFirstChoice(null);
     setSecondChoice(null);
+  };
+
+  const resetGame = () => {
+    setFirstChoice(null);
+    setSecondChoice(null);
+    setMatchedCards([]);
+    setOpCards(traitementCards(cards)); // remélange les cartes
   };
 
   const traitementCards = (cards) => {
@@ -45,25 +60,28 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (
-      firstChoice &&
-      secondChoice &&
-      firstChoice.img === secondChoice.img &&
-      firstChoice != null &&
-      secondChoice != null
-    ) {
+    if (firstChoice && secondChoice && firstChoice.img === secondChoice.img) {
       console.log("ça match !");
       setMatchedCards((prev) => [...prev, firstChoice, secondChoice]);
       resetChoices();
     } else if (
-      firstChoice?.img != secondChoice?.img &&
-      firstChoice != null &&
-      secondChoice != null
+      firstChoice &&
+      secondChoice &&
+      firstChoice.img !== secondChoice.img
     ) {
-      console.log("ça match pooo :(");
+      console.log("pas match");
       resetChoices();
     }
   }, [secondChoice]);
+
+  useEffect(() => {
+    if (matchedCards.length === opCards.length && opCards.length > 0) {
+      setTimeout(() => {
+        alert("Bravo !");
+        resetGame();
+      }, 500);
+    }
+  }, [matchedCards, opCards]);
 
   return (
     <>
@@ -73,18 +91,8 @@ function App() {
         onCardClick={handleClick}
         flippedCards={matchedCards.map((card) => card.uniqueId)}
       />
-      <button
-        onClick={() => {
-          console.log("op", opCards);
-        }}
-      >
-        print op
-      </button>
-      <button
-        onClick={() => {
-          console.log("matched", matchedCards);
-        }}
-      >
+      <button onClick={() => console.log("op", opCards)}>print op</button>
+      <button onClick={() => console.log("matched", matchedCards)}>
         print matched
       </button>
     </>
