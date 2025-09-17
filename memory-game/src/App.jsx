@@ -30,8 +30,6 @@ function App() {
       return;
     setFlippedCards((prev) => [...prev, card.uniqueId]);
 
-    console.log("ça clique", card);
-
     if (firstChoice === null) {
       setFirstChoice(card);
     } else {
@@ -86,7 +84,6 @@ function App() {
 
   useEffect(() => {
     if (firstChoice && secondChoice && firstChoice.img === secondChoice.img) {
-      console.log("ça match !");
       succesAlert("Bon choix !");
       setMatchedCards((prev) => [...prev, firstChoice, secondChoice]);
       resetChoices();
@@ -95,7 +92,6 @@ function App() {
       secondChoice &&
       firstChoice.img !== secondChoice.img
     ) {
-      console.log("pas match");
       errorAlert("Mauvais choix !");
       setIsDisabled(true);
       setTimeout(() => {
