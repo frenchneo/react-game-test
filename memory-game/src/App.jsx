@@ -19,6 +19,9 @@ function App() {
   const [isDisabled, setIsDisabled] = useState(false);
 
   const handleClick = (card) => {
+    if (!timerStarted) {
+      setTimerStarted(true);
+    }
     if (
       isDisabled ||
       flippedCards.includes(card.uniqueId) ||
@@ -48,6 +51,8 @@ function App() {
     setSecondChoice(null);
     setMatchedCards([]);
     setOpCards(traitementCards(cards));
+    setTimeLeft(60);
+    setTimerStarted(false);
     closeModal();
   };
 
@@ -70,6 +75,10 @@ function App() {
     }
     return doubled;
   };
+
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [timerStarted, setTimerStarted] = useState(false);
+  const isWin = matchedCards.length === opCards.length && opCards.length > 0;
 
   useEffect(() => {
     setOpCards(traitementCards(cards));
@@ -109,22 +118,54 @@ function App() {
     }
   }, [matchedCards, opCards]);
 
+  useEffect(() => {
+    let interval = null;
+
+    if (timerStarted && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      clearInterval(interval);
+      openModal();
+    }
+
+    return () => clearInterval(interval);
+  }, [timerStarted, timeLeft]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-200 via-pink-100 to-yellow-100 flex flex-col items-center pb-6">
       <Header />
-
+      <p className="text-lg font-semibold text-gray-800 mb-4">
+        ⏱️ Temps restant : {timeLeft}s
+      </p>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         className="fixed inset-0 flex items-center justify-center z-50"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-        contentLabel="Victoire"
+        contentLabel="Fin de partie"
       >
         <div className="bg-white rounded-2xl shadow-2xl p-8 text-center w-80 animate-fadeIn">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">🎉 Bravo !</h2>
-          <p className="text-gray-600 mb-6">
-            Tu as trouvé toutes les paires 👏
-          </p>
+          {isWin ? (
+            <>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                🎉 Bravo !
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Tu as trouvé toutes les paires 👏
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold text-red-600 mb-4">
+                ⏰ Temps écoulé !
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Tu as perdu... Essaie encore 😉
+              </p>
+            </>
+          )}
           <button
             onClick={resetGame}
             className="mt-4 px-6 py-2 bg-gray-100 text-black font-semibold rounded-lg shadow-md 
