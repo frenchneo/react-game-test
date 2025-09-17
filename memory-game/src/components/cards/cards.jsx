@@ -2,10 +2,9 @@ import Card from "./card";
 
 const Cards = ({ cards, onCardClick, flippedCards }) => {
   return (
-    <div className="cards-container">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 justify-items-center">
       {cards.map((card) => {
-        const flipped =
-          flippedCards.includes(card.uniqueId)
+        const flipped = flippedCards.includes(card.uniqueId);
         return (
           <Card
             key={card.uniqueId}

@@ -1,4 +1,3 @@
-import "./App.css";
 import Card1 from "./assets/img/card_1.png";
 import Card2 from "./assets/img/card_2.png";
 import Card3 from "./assets/img/card_3.png";
@@ -9,6 +8,7 @@ import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { errorAlert, succesAlert } from "./helpers/notification";
 import Modal from "react-modal";
+import Header from "./components/ui/header";
 
 function App() {
   const [opCards, setOpCards] = useState([]);
@@ -110,15 +110,31 @@ function App() {
   }, [matchedCards, opCards]);
 
   return (
-    <>
-      <p>Lorem ipsum</p>
+    <div className="min-h-screen bg-gradient-to-br from-purple-200 via-pink-100 to-yellow-100 flex flex-col items-center pb-6">
+      <Header />
+
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Example Modal"
+        className="fixed inset-0 flex items-center justify-center z-50"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+        contentLabel="Victoire"
       >
-        <button onClick={() => resetGame()}>Rejouer</button>
+        <div className="bg-white rounded-2xl shadow-2xl p-8 text-center w-80 animate-fadeIn">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">🎉 Bravo !</h2>
+          <p className="text-gray-600 mb-6">
+            Tu as trouvé toutes les paires 👏
+          </p>
+          <button
+            onClick={resetGame}
+            className="mt-4 px-6 py-2 bg-gray-100 text-black font-semibold rounded-lg shadow-md 
+             hover:bg-gray-200 hover:shadow-lg active:scale-95 transition duration-200"
+          >
+            🔄 Rejouer
+          </button>
+        </div>
       </Modal>
+
       <Cards
         cards={opCards}
         onCardClick={handleClick}
@@ -128,12 +144,8 @@ function App() {
         ]}
       />
 
-      <button onClick={() => console.log("op", opCards)}>print op</button>
-      <button onClick={() => console.log("matched", matchedCards)}>
-        print matched
-      </button>
       <ToastContainer />
-    </>
+    </div>
   );
 }
 
